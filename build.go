@@ -1,12 +1,15 @@
 // Package build contains utilities for build-time information.
 package build
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 var (
-	// GitTree is to be defined by a linker argument as the result of
-	// "git rev-list HEAD | wc -l | tr -d '[[:space:]]'".
-	GitTree = "0"
+	// Date is the build date in the YYYYMMDD format. May be defined by
+	// a linker argument, but effectively defaults to `date +%Y%m%d`.
+	Date = time.Now().Format("20060102")
 	// GitHash is to be defined by a linker argument as the result of
 	// "git rev-parse --short HEAD".
 	GitHash = "nohash"
@@ -20,20 +23,19 @@ type Version struct {
 	Minor int
 	// Micro is the Micro version.
 	Micro int
-	// Tree is size of the git commit tree, if defined. It is expected to be
-	// a monotonically-increasing integer and be unique within a branch.
-	Tree string
+	// Date is the build date in the YYYYMMDD format.
+	Date string
 	// Hash is the short git commit hash, if defined, to avoid version
 	// collisions for branched or privately built binaries.
 	Hash string
 }
 
 func (v Version) String() string {
-	return fmt.Sprintf("%d.%d.%d.%s.%s", v.Major, v.Minor, v.Micro, v.Tree, v.Hash)
+	return fmt.Sprintf("%d.%d.%d.%s.%s", v.Major, v.Minor, v.Micro, v.Date, v.Hash)
 }
 
-// NewVersion creates a build version using the global GitTree and GitHash variables,
+// NewVersion creates a build version using the global Date and GitHash variables,
 // which are expected to be defined externally as linker arguments.
 func NewVersion(major, minor, micro int) Version {
-	return Version{major, minor, micro, GitTree, GitHash}
+	return Version{major, minor, micro, Date, GitHash}
 }

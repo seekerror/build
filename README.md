@@ -1,12 +1,9 @@
 # build
 
-[![Build Status](https://travis-ci.org/seekerror/build.svg?branch=master)](https://travis-ci.org/seekerror/build)
-
 Build is a small utility for compile-time major.minor.micro versioning
-with additional linker hooks for git commit tree size and hash, such as
-"1.4.2.120.4f54bc3d". The benefit of the commit tree size is that it is
-unique within a branch and monotonically increasing. The hash serves to
-both identify the exact commit and prevent collisions between brances.
+with additional linker hooks for date and the git commit hash, such as
+"1.4.2.20240506.4f54bc3d". The date is directly useful and monotonically
+increasing. The hash identifies the exact commit and prevents collisions.
 
 ## Usage
 
@@ -22,7 +19,11 @@ func main() {
 
 Add the following flags to `go build` and `go install`:
 ```
--ldflags "-X github.com/seekerror/build.GitTree=`git rev-list HEAD | wc -l | tr -d '[[:space:]]'` -X github.com/seekerror/build.GitHash=`git rev-parse --short HEAD`"
+-ldflags "-X github.com/seekerror/build.GitHash=`git rev-parse --short HEAD`"
+```
+Or if a specific date is needed:
+```
+-ldflags "-X github.com/seekerror/build.Date=20240506 -X github.com/seekerror/build.GitHash=`git rev-parse --short HEAD`"
 ```
 
 ## License
